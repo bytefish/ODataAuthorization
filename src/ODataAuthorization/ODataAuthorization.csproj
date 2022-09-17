@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <SignAssembly>True</SignAssembly>
+    <Description>Authorization for OData-enabled ASP.NET Core WebAPI endpoints. This is a fork of the Microsoft.AspNetCore.OData.Authorization library.</Description>
+    <PackageTags>odata;odata authorization</PackageTags>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Company></Company>
+    <Authors>Philipp Wagner</Authors>
+    <Copyright>Copyright © 2022</Copyright>
+    <Version>1.0.0</Version>
+    <Product></Product>
+    <RepositoryUrl>https://github.com/bytefish/ODataAuthorization</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/bytefish/ODataAuthorization</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)\..\..\tools\ODataAuthorization.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>False</DelaySign>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>portable</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.OData" Version="8.0.11" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

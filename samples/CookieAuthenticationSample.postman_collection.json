@@ -1,0 +1,127 @@
+{
+	"info": {
+		"_postman_id": "10304e27-958a-4fdb-b869-de2bb780cd95",
+		"name": "CookieAuthenticationSample",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/auth/login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"RequestedScopes\": [\"Product.Create\", \"Product.Read\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/odata/Products",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"Id\": 1,\r\n\t\"Name\": \"Product #1\",\r\n\t\"Price\": 10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/odata/Products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"odata",
+						"Products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/odata/Products",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/odata/Products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"odata",
+						"Products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/odata/Products(1)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/odata/Products(1)",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"odata",
+						"Products(1)"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/odata/Products(1)",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/odata/Products(1)",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"odata",
+						"Products(1)"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

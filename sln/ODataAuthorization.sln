@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ODataAuthorization", "..\src\ODataAuthorization\ODataAuthorization.csproj", "{76FAA150-248D-4FDB-AC14-45B4012FC5E0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ODataAuthorization.Tests", "..\test\ODataAuthorization.Tests\ODataAuthorization.Tests.csproj", "{7A3995FF-56C7-4336-AC14-759FE6620EED}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ODataAuthorizationSample", "..\samples\ODataAuthorizationSample\ODataAuthorizationSample.csproj", "{9A41F458-49A0-4B6B-8916-92D7A57CB449}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CookieAuthenticationSample", "..\samples\CookieAuthenticationSample\CookieAuthenticationSample.csproj", "{1114A03D-29AA-4F92-8619-BAFF9A399A69}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{76FAA150-248D-4FDB-AC14-45B4012FC5E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76FAA150-248D-4FDB-AC14-45B4012FC5E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76FAA150-248D-4FDB-AC14-45B4012FC5E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76FAA150-248D-4FDB-AC14-45B4012FC5E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A3995FF-56C7-4336-AC14-759FE6620EED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A3995FF-56C7-4336-AC14-759FE6620EED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A3995FF-56C7-4336-AC14-759FE6620EED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A3995FF-56C7-4336-AC14-759FE6620EED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A41F458-49A0-4B6B-8916-92D7A57CB449}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A41F458-49A0-4B6B-8916-92D7A57CB449}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A41F458-49A0-4B6B-8916-92D7A57CB449}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A41F458-49A0-4B6B-8916-92D7A57CB449}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1114A03D-29AA-4F92-8619-BAFF9A399A69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1114A03D-29AA-4F92-8619-BAFF9A399A69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1114A03D-29AA-4F92-8619-BAFF9A399A69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1114A03D-29AA-4F92-8619-BAFF9A399A69}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A0192535-BE21-4075-B04D-25DEF66502E8}
+	EndGlobalSection
+EndGlobal
