@@ -8,6 +8,7 @@ namespace ODataAuthorizationDemo.Models
         public static IEdmModel GetModel()
         {
             var builder = new ODataConventionModelBuilder();
+
             var products = builder.EntitySet<Product>("Products");
 
             products.HasReadRestrictions()

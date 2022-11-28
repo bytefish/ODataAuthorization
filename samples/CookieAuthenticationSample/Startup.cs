@@ -41,42 +41,47 @@ namespace ODataAuthorizationDemo
                     });
             });
 
+            // Add Cookie Authentication:
+            services
+                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie((options) =>
+                {
+                    options.AccessDeniedPath = string.Empty;
+
+                    options.Events.OnRedirectToAccessDenied = (context) =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+
+                        return Task.CompletedTask;
+                    };
+
+                    options.Events.OnRedirectToLogin = (context) =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
+                        return Task.CompletedTask;
+                    };
+                });
+
             services
                 .AddControllers()
+                // Add OData Routes:
                 .AddOData((opt) => opt
                     .AddRouteComponents("odata", AppEdmModel.GetModel())
                     .EnableQueryFeatures())
+                // Add OData Authorization:
                 .AddODataAuthorization((options) =>
                 {
                     options.ScopesFinder = context =>
                     {
-                        var scopes = context.User.FindAll("Scope").Select(claim => claim.Value);
+                        // Select all "Scope" Claims of the ClaimsPrincipal:
+                        var scopes = context.User
+                            .FindAll("Scope")
+                            .Select(claim => claim.Value);
 
                         return Task.FromResult(scopes);
                     };
-
-                    options
-                        .ConfigureAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                        // Configure the Authentication, so it returns a 401 for unauthorized access:
-                        .AddCookie((options) =>
-                        {
-                            options.AccessDeniedPath = string.Empty;
-
-                            options.Events.OnRedirectToAccessDenied = (context) =>
-                            {
-                                context.Response.StatusCode = StatusCodes.Status403Forbidden;
-
-                                return Task.CompletedTask;
-                            };
-
-                            options.Events.OnRedirectToLogin = (context) =>
-                            {
-                                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-
-                                return Task.CompletedTask;
-                            };
-                        });
-            });
+           });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
