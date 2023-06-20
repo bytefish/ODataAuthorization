@@ -9,7 +9,7 @@ namespace ODataAuthorization
     /// Evaluates whether specified scopes should be allow
     /// access to a restricted resource.
     /// </summary>
-    internal interface IScopesEvaluator
+    public interface IScopesEvaluator
     {
         /// <summary>
         /// Returns true if access should be granted based

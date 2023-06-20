@@ -164,18 +164,17 @@ namespace ODataAuthorization.Tests
                             .AddScheme<CustomAuthOptions, CustomAuthHandler>("AuthScheme", options => { });
                     });
                 })
-    .Configure(app =>
-    {
-        app.UseCors("AllowAll");
-        app.UseRouting();
-        app.UseAuthentication();
-        app.UseODataAuthorization();
+                .Configure(app =>
+                {
+                    app.UseCors("AllowAll");
+                    app.UseRouting();
+                    app.UseAuthentication();
 
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllers();
-        });
-    });
+                    app.UseEndpoints(endpoints =>
+                    {
+                        endpoints.MapControllers();
+                    });
+                });
 
             return new TestServer(builder);
         }

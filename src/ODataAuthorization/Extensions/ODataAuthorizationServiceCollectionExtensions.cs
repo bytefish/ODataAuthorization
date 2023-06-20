@@ -3,6 +3,7 @@
 
 using System;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ODataAuthorization
@@ -34,18 +35,16 @@ namespace ODataAuthorization
         {
             var options = new ODataAuthorizationOptions(services);
             configureOptions?.Invoke(options);
-            services.AddSingleton<IAuthorizationHandler, ODataAuthorizationHandler>(_ => new ODataAuthorizationHandler(options.ScopesFinder));
+
+            services.AddSingleton<IAuthorizationHandler, ODataAuthorizationHandler>(_ =>
+            {
+                return new ODataAuthorizationHandler(options.ScopesFinder);
+            });
+
+            services.AddSingleton<IFilterProvider, ODataAuthorizeFilterProvider>();
             
-
-            if (!options.AuthenticationConfigured)
-            {
-                options.ConfigureAuthentication();
-            }
-
-            if (!options.AuthorizationConfigured)
-            {
-                options.ConfigureAuthorization();
-            }
+            options.ConfigureAuthentication();
+            options.ConfigureAuthorization();
 
             return services;
         }

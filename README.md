@@ -17,8 +17,7 @@ In your `Startup.cs` file:
 
 ```c#
 using Microsoft.AspNetCore.OData.Authorization
-```
-```c#
+
 public void ConfigureServices(IServiceCollection services)
 {
     // odata authorization services
@@ -30,18 +29,6 @@ public void ConfigureServices(IServiceCollection services)
         });
 
     service.AddRouting();
-}
-```
-```c#
-public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-{
-    app.UseRouting();
-    // OData register authorization middleware
-    app.UseOdataAuthorization();
-
-    app.UseEndpoints(endpoints => {
-        endpoints.MapODataRoute("odata", "odata", GetEdmModel());
-    });
 }
 ```
 

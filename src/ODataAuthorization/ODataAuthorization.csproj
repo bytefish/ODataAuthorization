@@ -9,7 +9,7 @@
     <Company></Company>
     <Authors>Philipp Wagner</Authors>
     <Copyright>Copyright © 2022</Copyright>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <Product></Product>
     <RepositoryUrl>https://github.com/bytefish/ODataAuthorization</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

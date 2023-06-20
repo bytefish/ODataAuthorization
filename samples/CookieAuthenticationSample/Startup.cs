@@ -98,7 +98,6 @@ namespace ODataAuthorizationDemo
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseODataAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

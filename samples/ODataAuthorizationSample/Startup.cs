@@ -101,8 +101,6 @@ namespace AspNetCore3ODataPermissionsSample
 
             app.UseAuthentication();
             
-            app.UseODataAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
