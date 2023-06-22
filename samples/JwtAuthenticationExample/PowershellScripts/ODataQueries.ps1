@@ -12,107 +12,109 @@
     Copyright 2023 - MIT License
 #>
 
-# Perform /Auth/login to obtain the JWT with Requested Scopes
-$authRequestBody = @{
-    Email = "admin@admin.com"
-    Password = "123456"
-    RequestedScopes = "Products.Read Products.ReadByKey"
+
+function Send-ODataRequest {
+    param (
+        [Parameter(Mandatory)]
+        [string]$AuthUrl,
+
+        [Parameter(Mandatory)]
+        [string]$AuthEmail,
+
+        [Parameter(Mandatory)]
+        [string]$AuthPassword,
+
+        [Parameter(Mandatory)]
+        [string]$Description,
+
+        [Parameter(Mandatory)]
+        [string]$Endpoint,
+        
+        [Parameter(Mandatory)]
+        [string]$RequestedScopes
+    )
+        
+    # Perform /Auth/login to obtain the JWT with Requested Scopes
+    $authRequestBody = @{
+        Email = $AuthEmail
+        Password = $AuthPassword
+        RequestedScopes = $RequestedScopes
+    }
+
+    $authRequestParameters = @{
+        Method = "POST"
+        Uri = $AuthUrl
+        Body = ($authRequestBody | ConvertTo-Json) 
+        ContentType = "application/json"
+    }
+
+    # Invoke the Rest API
+    $authRequestResponse = Invoke-RestMethod @authRequestParameters
+
+    # Extract JWT from the JSON Response 
+    $authToken = $authRequestResponse.token
+
+    # The Auth Header needs to be sent for any additional OData request
+    $authHeader = @{
+        Authorization = "Bearer $authToken"
+    }
+
+    Write-Host "[REQ]"
+    Write-Host "[REQ] OData Request"
+    Write-Host "[REQ]    URL:            $Endpoint"
+    Write-Host "[REQ]    Scopes:         $RequestedScopes"
+    Write-Host "[REQ]"
+
+    $odataRequestParameters = @{
+        Method = "GET"
+        Uri = $Endpoint
+        Headers = $authHeader
+        StatusCodeVariable = 'statusCode'
+    }
+
+    try {
+        
+        $oDataResponse = Invoke-RestMethod @odataRequestParameters
+        $oDataResponseValue = $oDataResponse.value | ConvertTo-Json
+        
+        Write-Host "[RES]    HTTP Status:    $statusCode"  -ForegroundColor Green
+        Write-Host "[RES]    Body:           $oDataResponseValue"  -ForegroundColor Green
+    } catch {
+        Write-Host "[ERR] Request failed with StatusCode:" $_.Exception.Response.StatusCode.value__ -ForegroundColor Red
+    }
 }
 
-$authRequestParameters = @{
-    Method = "POST"
-    Uri = "http://localhost:5124/Auth/login"
-    Body = ($authRequestBody | ConvertTo-Json) 
-    ContentType = "application/json"
-}
+$authUrl = "http://localhost:5124/Auth/login"
+$authEmail = "admin@admin.com"
+$authPassword = "123456"
 
-# Invoke the Rest API
-$authRequestResponse = Invoke-RestMethod @authRequestParameters
+$requests = 
+    @{
+        AuthUrl = $authUrl
+        AuthEmail = $authEmail 
+        AuthPassword = $authPassword 
+        Description = "Get all Products without $expand"
+        Endpoint = "http://localhost:5124/odata/Products" 
+        RequestedScopes = "Products.Read Products.ReadByKey"
+    },    
+    @{
+        AuthUrl = $authUrl
+        AuthEmail = $authEmail 
+        AuthPassword = $authPassword 
+        Description = "Get all Products with an $expand on the 'Address' navigation property, but missing 'Products.ReadAddress' scope"
+        Endpoint = "http://localhost:5124/odata/Products?`$expand=Address" 
+        RequestedScopes = "Products.Read Products.ReadByKey"
+    },
+    @{
+        AuthUrl = $authUrl
+        AuthEmail = $authEmail 
+        AuthPassword = $authPassword 
+        Description = "Get all Products with an $expand on the 'Address' navigation, 'Products.ReadAddress' scope is included"
+        Endpoint = "http://localhost:5124/odata/Products?`$expand=Address" 
+        RequestedScopes = "Products.Read Products.ReadByKey Products.ReadAddress"
+    }
 
-# Extract JWT from the JSON Response 
-$authToken = $authRequestResponse.token
-
-# The Auth Header needs to be sent for any additional OData request
-$authHeader = @{
-    Authorization = "Bearer $authToken"
-}
-
-# OData Query 1: All Products
-$allProductsResponse = Invoke-RestMethod -Uri "http://localhost:5124/odata/Products" -Headers $authHeader 
-$allProductsResponseValue = $allProductsResponse.value | ConvertTo-Json
-
-
-Write-Host "[REQ]"
-Write-Host "[REQ] OData Request #1"
-Write-Host "[REQ]     URL:            http://localhost:5124/odata/Products"
-Write-Host "[REQ]     Scopes:         Products.Read Products.ReadByKey"
-Write-Host "[REQ]"
-
-try {
-    $allProductsResponse = Invoke-RestMethod -Uri "http://localhost:5124/odata/Products" -Headers $authHeader 
-    $allProductsResponseValue = $allProductsResponse.value | ConvertTo-Json
-    
-    Write-Host "[RES]    HTTP Status:    $statusCode"  -ForegroundColor Green
-    Write-Host "[RES]    Body:           $allProductsResponseValue"  -ForegroundColor Green
-} catch {
-    Write-Host "[RES] Request failed with StatusCode:" $_.Exception.Response.StatusCode.value__ -ForegroundColor Red
-}
-
-Write-Host "[REQ]"
-Write-Host "[REQ] OData Request #2"
-Write-Host "[REQ]     URL:            http://localhost:5124/odata/Products(`$expand=Address)"
-Write-Host "[REQ]     Scopes:         Products.Read Products.ReadByKey"
-Write-Host "[REQ]"
-
-try {
-    # OData Query 1: All Products
-    $customersWithAddressResponse = Invoke-RestMethod -Uri "http://localhost:5124/odata/Products?`$expand=Address" -Headers $authHeader 
-    $customersWithAddressResponseValue = $customersWithAddressResponse.value | ConvertTo-Json
-    
-    Write-Host "[RES]    HTTP Status:    $statusCode"  -ForegroundColor Green
-    Write-Host "[RES]    Body:           $allProductsResponseValue"  -ForegroundColor Green
-} catch {
-    Write-Host "[RES] Request failed with StatusCode:" $_.Exception.Response.StatusCode.value__ -ForegroundColor Red
-}
-
-# Perform /Auth/login with additional Products.ReadAddress Scope
-$authRequestBody = @{
-    Email = "admin@admin.com"
-    Password = "123456"
-    RequestedScopes = "Products.Read Products.ReadByKey Products.ReadAddress"
-}
-
-$authRequestParameters = @{
-    Method = "POST"
-    Uri = "http://localhost:5124/Auth/login"
-    Body = ($authRequestBody | ConvertTo-Json) 
-    ContentType = "application/json"
-}
-
-# Invoke the Rest API
-$authRequestResponse = Invoke-RestMethod @authRequestParameters
-
-# Extract JWT from the JSON Response 
-$authToken = $authRequestResponse.token
-
-# The Auth Header needs to be sent for any additional OData request
-$authHeader = @{
-    Authorization = "Bearer $authToken"
-}
-
-Write-Host "[REQ]"
-Write-Host "[REQ] OData Request #3"
-Write-Host "[REQ]     URL:            http://localhost:5124/odata/Products(`$expand=Address)"
-Write-Host "[REQ]     Scopes:         Products.Read Products.ReadByKey Products.ReadAddress" 
-Write-Host "[REQ]" -ForegroundColor Green
-
-try {
-    # OData Query 1: All Products
-    $customersWithAddressResponse = Invoke-RestMethod -Uri "http://localhost:5124/odata/Products?`$expand=Address" -Headers $authHeader 
-    $customersWithAddressResponseValue = $customersWithAddressResponse.value | ConvertTo-Json
-    
-    Write-Host "[RES]    HTTP Status:    $statusCode"  -ForegroundColor Green
-    Write-Host "[RES]    Body:           $allProductsResponseValue"  -ForegroundColor Green
-} catch {
-    Write-Host "[RES] Request failed with StatusCode:" $_.Exception.Response.StatusCode.value__ -ForegroundColor Red 
+foreach ( $request in $requests )
+{
+    Send-ODataRequest @request
 }
