@@ -12,7 +12,6 @@
     Copyright 2023 - MIT License
 #>
 
-
 function Send-ODataRequest {
     param (
         [Parameter(Mandatory)]
@@ -61,8 +60,10 @@ function Send-ODataRequest {
 
     Write-Host "[REQ]"
     Write-Host "[REQ] OData Request"
-    Write-Host "[REQ]    URL:            $Endpoint"
-    Write-Host "[REQ]    Scopes:         $RequestedScopes"
+    Write-Host "[REQ]"
+    Write-Host "[REQ]   Description:    $Description"
+    Write-Host "[REQ]   URL:            $Endpoint"
+    Write-Host "[REQ]   Scopes:         $RequestedScopes"
     Write-Host "[REQ]"
 
     $odataRequestParameters = @{
@@ -93,7 +94,7 @@ $requests =
         AuthUrl = $authUrl
         AuthEmail = $authEmail 
         AuthPassword = $authPassword 
-        Description = "Get all Products without $expand"
+        Description = "Get all Products without 'Address' expanded"
         Endpoint = "http://localhost:5124/odata/Products" 
         RequestedScopes = "Products.Read Products.ReadByKey"
     },    
@@ -101,7 +102,7 @@ $requests =
         AuthUrl = $authUrl
         AuthEmail = $authEmail 
         AuthPassword = $authPassword 
-        Description = "Get all Products with an $expand on the 'Address' navigation property, but missing 'Products.ReadAddress' scope"
+        Description = "Get all Products with 'Address' expanded. Missing Scope: 'Products.ReadAddress'"
         Endpoint = "http://localhost:5124/odata/Products?`$expand=Address" 
         RequestedScopes = "Products.Read Products.ReadByKey"
     },
@@ -109,7 +110,7 @@ $requests =
         AuthUrl = $authUrl
         AuthEmail = $authEmail 
         AuthPassword = $authPassword 
-        Description = "Get all Products with an $expand on the 'Address' navigation, 'Products.ReadAddress' scope is included"
+        Description = "Get all Products with 'Address' expanded. Valid Required Scopes."
         Endpoint = "http://localhost:5124/odata/Products?`$expand=Address" 
         RequestedScopes = "Products.Read Products.ReadByKey Products.ReadAddress"
     }
