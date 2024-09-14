@@ -113,7 +113,7 @@ namespace AspNetCore3ODataPermissionsSample
     // our customer authentication handler
     internal class CustomAuthenticationHandler : AuthenticationHandler<CustomAuthenticationOptions>
     {
-        public CustomAuthenticationHandler(IOptionsMonitor<CustomAuthenticationOptions> options, ILoggerFactory logger, System.Text.Encodings.Web.UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+        public CustomAuthenticationHandler(IOptionsMonitor<CustomAuthenticationOptions> options, ILoggerFactory logger, System.Text.Encodings.Web.UrlEncoder encoder) : base(options, logger, encoder)
         {
         }
 
