@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.OData.Abstracts;
 using Microsoft.AspNetCore.OData.Extensions;
 using Microsoft.AspNetCore.OData.Query;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.OData.Edm;
 using System;
 using System.Linq;
@@ -42,7 +44,7 @@ namespace ODataAuthorization
             }
 
             // At this point in the Middleware the SelectExpandClause hasn't been evaluated (https://github.com/OData/WebApiAuthorization/issues/4),
-            // but it's needed to provide securing $expand-statements, so you can't request expanded data without permissions.
+            // but it's needed to provide securing $expand-statements, so that you can't request expanded data without permissions.
             ParseSelectExpandClause(httpContext, model, odataFeature);
 
             var permissions = model.ExtractPermissionsForRequest(httpContext.Request.Method, odataFeature.Path, odataFeature.SelectExpandClause);
@@ -96,7 +98,9 @@ namespace ODataAuthorization
             }
             catch (Exception e)
             {
-                //_logger.LogInformation(e, "Failed to parse SelectExpandClause");
+                httpContext.RequestServices
+                    .GetRequiredService<ILogger<ODataAuthorizeFilterProvider>>()
+                    .LogInformation(e, "Failed to parse SelectExpandClause");
             }
         }
     }

@@ -15,7 +15,7 @@ namespace ODataAuthorization.Tests
         [InlineData(new [] { "User.Write", "User.Read" }, true)]
         [InlineData(new [] { "Calendar.Read" }, false)]
         [InlineData(new string[] { }, false)]
-        public void ShouldOnlySucceedIfUserHasAnAllowedScope(string[] userScopes, bool shouldSucceed)
+        public async Task ShouldOnlySucceedIfUserHasAnAllowedScope(string[] userScopes, bool shouldSucceed)
         {
             var permissionData = new PermissionData()
             {
@@ -35,7 +35,7 @@ namespace ODataAuthorization.Tests
             var context = CreateAuthContext("Permission", new[] { requirement }, userScopes);
             var handler = new ODataAuthorizationHandler(FindScopes);
 
-            handler.HandleAsync(context).Wait();
+            await handler.HandleAsync(context);
 
             Assert.Equal(shouldSucceed, context.HasSucceeded);
         }
@@ -44,7 +44,7 @@ namespace ODataAuthorization.Tests
         [Theory]
         [InlineData(new[] { "User.Write", "User.Read" }, true)]
         [InlineData(new[] { "Calendar.Read" }, false)]
-        public void ShouldGetScopesFromClaimsIfNoScopeFinderProvided(string[] userScopes, bool shouldSucceed)
+        public async Task ShouldGetScopesFromClaimsIfNoScopeFinderProvided(string[] userScopes, bool shouldSucceed)
         {
             var permissionData = new PermissionData()
             {
@@ -65,7 +65,7 @@ namespace ODataAuthorization.Tests
             var context = CreateAuthContext("Scope", new[] { requirement }, userScopes);
             var handler = new ODataAuthorizationHandler();
 
-            handler.HandleAsync(context).Wait();
+            await handler.HandleAsync(context);
 
             Assert.Equal(shouldSucceed, context.HasSucceeded);
         }

@@ -12,12 +12,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using ODataAuthorization.Tests.Abstractions;
 using ODataAuthorization.Tests.Extensions;
 using ODataAuthorization.Tests.Models;
 using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
-using Microsoft.AspNetCore.OData.Routing.Attributes;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -287,7 +285,7 @@ namespace ODataAuthorization.Tests
         [InlineData("MERGE", "Products(10)/ODataAuthorization.Tests.Models.SpecialProduct", "Product.Update", "PATCH SpecialProduct(10)", Skip = "Method Not Allowed")]
         [InlineData("MERGE", "MyProduct", "MyProduct.Update", "PATCH MyProduct", Skip = "Method Not Allowed")]
         [InlineData("MERGE", "MyProduct/ODataAuthorization.Tests.Models.SpecialProduct", "MyProduct.Update", "PATCH MySpecialProduct", Skip = "Method Not Allowed")]
-        public async void ShouldApplyModelPermissionsToEndpoints(string method, string endpoint, string permissions, string expectedResponse)
+        public async Task ShouldApplyModelPermissionsToEndpoints(string method, string endpoint, string permissions, string expectedResponse)
         {
             var uri = $"http://localhost/odata/{endpoint}";
             // permission forbidden if auth not provided
@@ -309,7 +307,7 @@ namespace ODataAuthorization.Tests
         [Theory]
         [InlineData("GET", "Incidents", "", "GetIncidents")]
         [InlineData("GET", "IncidentGroups(10)/Incidents", "IncidentGroup.Read", "GetIncidentGroupIncidents(10)")]
-        public async void ShouldGrantAccessIfModelDoesNotDefinePermissions(string method, string endpoint, string permissions, string expectedResponse)
+        public async Task ShouldGrantAccessIfModelDoesNotDefinePermissions(string method, string endpoint, string permissions, string expectedResponse)
         {
             var uri = $"http://localhost/odata/{endpoint}";
             var message = new HttpRequestMessage(new HttpMethod(method), uri);
@@ -322,12 +320,14 @@ namespace ODataAuthorization.Tests
         }
 
         [Fact]
-        public async void ShouldIgnoreNonODataEndpoints()
+        public async Task ShouldIgnoreNonODataEndpoints()
         {
             var uri = "http://localhost/api/TodoItems";
             HttpResponseMessage  response = await _client.GetAsync(uri);
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Equal("GET TodoItems", response.Content.ReadAsStringAsync().Result);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            Assert.Equal("GET TodoItems", responseContent);
 
 
             var message = new HttpRequestMessage(new HttpMethod("GET"), uri);
@@ -342,7 +342,7 @@ namespace ODataAuthorization.Tests
 
     internal class CustomAuthHandler : AuthenticationHandler<CustomAuthOptions>
     {
-        public CustomAuthHandler(IOptionsMonitor<CustomAuthOptions> options, ILoggerFactory logger, System.Text.Encodings.Web.UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+        public CustomAuthHandler(IOptionsMonitor<CustomAuthOptions> options, ILoggerFactory logger, System.Text.Encodings.Web.UrlEncoder encoder, TimeProvider timeProvider) : base(options, logger, encoder)
         {
         }
 

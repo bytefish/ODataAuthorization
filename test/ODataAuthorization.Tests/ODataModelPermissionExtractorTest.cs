@@ -28,7 +28,6 @@ namespace ODataAuthorization.Tests
             var container = new ServiceCollection();
             container.AddSingleton(model);
             container.AddSingleton<ODataUriResolver>();
-            container.AddSingleton<ODataSimplifiedOptions>();
             container.AddSingleton<ODataUriParserSettings>();
             container.AddSingleton<UriPathParser>();
             container.AddSingleton<ODataOptions>();
