@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AspNetCore3ODataPermissionsSample.Models
 {
-    [Owned, ComplexType]
+    [ComplexType]
     public class Address
     {
         public string City { get; set; }

@@ -60,6 +60,7 @@ namespace ODataAuthorizationSample.Data
                     foreach (var customer in customers)
                     {
                         context.Customers.Add(customer);
+
                         context.Orders.Add(customer.Order);
                         context.Orders.AddRange(customer.Orders);
                     }

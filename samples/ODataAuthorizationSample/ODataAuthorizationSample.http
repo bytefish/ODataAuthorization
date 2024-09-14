@@ -1,0 +1,70 @@
+@ODataAuthorizationSample_HostAddress = https://localhost:5000
+
+## ds
+
+### Get All Customers
+GET {{ODataAuthorizationSample_HostAddress}}/odata/Customers
+Permissions: Customers.Read
+
+### Get Customer By Key
+GET {{ODataAuthorizationSample_HostAddress}}/odata/Customers(1)
+Permissions: Customers.ReadByKey
+
+### Post Customer By Key
+POST {{ODataAuthorizationSample_HostAddress}}/odata/Customers
+Content-Type: application/json
+Permissions: Customers.Insert
+{
+  "Id": 8, 
+  "Name": "Customer X",
+  "HomeAddress": {
+    "City": "Redmond",
+    "Street": "156 AVE NE"
+  },
+  "FavoriteAddresses": [
+    {
+      "City": "Redmond",
+      "Street": "256 AVE NE"        
+    },
+    {
+      "City": "Redd",
+      "Street": "56 AVE NE"
+    }
+  ]
+}
+
+### Execute Bound GetAge Function
+GET {{ODataAuthorizationSample_HostAddress}}/odata/Customers(1)/GetAge
+Permissions: Customers.GetAge
+
+### Execute Unbound GetTopCustomer Function
+GET {{ODataAuthorizationSample_HostAddress}}/odata/GetTopCustomer
+Permissions: Customers.GetTop
+
+### Get Customer Orders
+GET {{ODataAuthorizationSample_HostAddress}}/odata/Customers(1)/Orders
+Permissions: Customers.Read,Orders.Read
+    
+### Get Customer Order
+GET {{ODataAuthorizationSample_HostAddress}}/odata/Customers(1)/Orders(2)
+Permissions: Customers.ReadByKey,Orders.ReadByKey
+   
+### Get Title of Customer Order
+GET {{ODataAuthorizationSample_HostAddress}}/odata/Customers(1)/Orders(2)/Title
+Permissions: Customers.Read,Orders.Read
+   
+### Get $ref of Customer Order
+GET {{ODataAuthorizationSample_HostAddress}}/odata/Customers(1)/Orders(2)/$ref
+Permissions: Customers.Read,Orders.Read
+  
+### Get single Customer Order
+GET {{ODataAuthorizationSample_HostAddress}}/odata/Customers(1)/Order
+Permissions: Customers.Read,Orders.Read
+
+### Get single Customer Order
+GET {{ODataAuthorizationSample_HostAddress}}/odata/Customers(1)/Order
+Permissions: Customers.Read,Customers.ReadOrder
+   
+### Get Title of Single Customer Order
+GET {{ODataAuthorizationSample_HostAddress}}/odata/Customers(1)/Order/Title
+Permissions: Customers.Read,Customers.ReadOrder
