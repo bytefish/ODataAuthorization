@@ -51,9 +51,11 @@ builder.Services.AddControllers()
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.UseSecurityTokenValidators = true;
 
         options.TokenValidationParameters = new TokenValidationParameters()
         {
+            
             ClockSkew = TimeSpan.Zero,
             ValidateIssuer = true,
             ValidateAudience = true,
@@ -61,22 +63,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = "apiWithAuthBackend",
             ValidAudience = "apiWithAuthBackend",
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"])
-            ),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]!)),
         };
-        
-        // options.Events.OnAuthenticationFailed = (context) =>
-        // {
-        //     context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-        //     return Task.CompletedTask;
-        // };
-        // options.Events.OnForbidden = context =>
-        // {
-        //     context.Response.StatusCode = StatusCodes.Status403Forbidden;
-        //     return Task.CompletedTask;
-        // };
-        
     });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

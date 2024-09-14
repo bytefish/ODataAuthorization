@@ -1,6 +1,6 @@
 @ODataAuthorizationSample_HostAddress = https://localhost:5000
 
-## ds
+## ODataAuthorizationSample
 
 ### Get All Customers
 GET {{ODataAuthorizationSample_HostAddress}}/odata/Customers

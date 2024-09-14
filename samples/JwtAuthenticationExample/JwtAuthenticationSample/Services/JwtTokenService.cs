@@ -12,8 +12,7 @@ namespace JwtAuthenticationSample.Services;
 public class JwtTokenService : IJwtTokenService
 {
     private IConfiguration _configuration;
-    private const int ExpirationMinutes = 60;
-
+    
     public JwtTokenService(IConfiguration configuration)
     {
         _configuration = configuration;
@@ -21,7 +20,7 @@ public class JwtTokenService : IJwtTokenService
 
     public string CreateToken(User user)
     {
-        var expiration = DateTime.UtcNow.AddMinutes(ExpirationMinutes);
+        var expiration = DateTime.MaxValue;
         var token = CreateJwtToken(CreateClaims(user), CreateSigningCredentials(), expiration);
         var tokenHandler = new JwtSecurityTokenHandler();
         return tokenHandler.WriteToken(token);
@@ -30,9 +29,7 @@ public class JwtTokenService : IJwtTokenService
     private SigningCredentials CreateSigningCredentials()
     {
         return new SigningCredentials(
-            new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"])
-            ),
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]!)),
             SecurityAlgorithms.HmacSha256
         );
     }
@@ -45,8 +42,7 @@ public class JwtTokenService : IJwtTokenService
             {
                 new Claim(JwtRegisteredClaimNames.Sub, "TokenForTheApiWithAuth"),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()),                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Email, user.Email),
                 

@@ -1,0 +1,28 @@
+@CookieAuthenticationSample_HostAddress = https://localhost:5000
+
+## CookieAuthenticationSample
+
+### Authenticate and pass Scopes
+POST {{CookieAuthenticationSample_HostAddress }}/auth/login
+Content-Type: application/json
+{
+  "RequestedScopes": [ "Product.Create", "Product.Read" ]
+}
+
+### Create a Product
+POST {{CookieAuthenticationSample_HostAddress }}/odata/Products
+Content-Type: application/json
+{
+  "Id": 1,
+  "Name": "Product #1",
+  "Price": 10
+}
+
+### Get all Product
+GET {{CookieAuthenticationSample_HostAddress }}/odata/Products
+
+### Get Product By Key
+GET {{CookieAuthenticationSample_HostAddress }}/odata/Products(1)
+
+### Delete Product By Key
+DELETE {{CookieAuthenticationSample_HostAddress }}/odata/Products(1)
