@@ -36,6 +36,7 @@ public void ConfigureServices(IServiceCollection services)
 
 - [ODataAuthorizationSample](./samples/ODataAuthorizationSample): Simple API with permission restrictions and OData authorization middleware set up with a custom authentication handler
 - [CookieAuthenticationSample](./samples/CookieAuthenticationSample): Basic API with permissions restrictions and a cookie-based authentication handler
+- [JwtAuthenticationSample](./samples/JwtAuthenticationSample): Basic API with permissions restrictions and a Jwt-based authentication handler
 
 ### How to specify permission scopes?
 
