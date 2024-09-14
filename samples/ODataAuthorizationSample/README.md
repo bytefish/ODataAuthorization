@@ -25,7 +25,3 @@ Based on the model annotations, the:
 `GET /odata/Customers(1)/Orders/(1)/$ref` | `(Customers.Read` or `Customers.ReadByKey`)
 `GET /odata/Customers(1)/Order` | (`Customers.Read` or `Customers.ReadByKey`) and (`Customers.ReadOrder` or `Orders.Read`)
 `GET /odata/Customers(1)/Order/Title` | (`Customers.Read` or `Customers.ReadByKey`) and (`Customers.ReadOrder` or `Orders.Read`)
-
-To test the app, run it and open Postman. In Postman
-add a header called `Permissions` and any of the permissions
-specified above in a comma-separated list (e.g. `Customers.Read, Customers.Insert`), then make requests to the endpoints above. If you hit an endpoint without adding its required permissions to the header, you should get a `403 Forbidden` error.
