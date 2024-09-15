@@ -4,7 +4,7 @@ This library is a fork of the `Microsoft.AspNetCore.OData.Authorization` library
 
 * [https://github.com/OData/WebApiAuthorization](https://github.com/OData/WebApiAuthorization)
 
-This fork adds support for .NET 6 and ASP.NET Core OData 8. It uses the permissions defined in the [capability annotations] of 
+It uses the permissions defined in the [capability annotations] of 
 the OData model to apply authorization policies to an OData service based on `Microsoft.AspNetCore.OData`.
 
 It has been renamed to `ODataAuthorization` to avoid being mistaken as an official Microsoft package.
