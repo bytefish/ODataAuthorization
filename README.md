@@ -18,7 +18,7 @@ version `2.0` the APIs differ greatly, so please read carefully when updating th
 In your `Program.cs` file you'll need to add the Policy and Require it for your Endpoints:
 
 ```csharp
-using Microsoft.AspNetCore.OData.Authorization
+using ODataAuthorization;
 
 // ...
 
@@ -32,7 +32,6 @@ builder.Services.AddAuthorization(options =>
 var app = builder.Build();
 
 // ...
-
 
 app
     .MapControllers()
