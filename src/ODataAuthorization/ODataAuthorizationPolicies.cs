@@ -34,23 +34,9 @@ namespace ODataAuthorization
         /// </summary>
         /// <typeparam name="TBuilder">Type of the <see cref="IEndpointConventionBuilder"/></typeparam>
         /// <param name="builder">The <see cref="IEndpointConventionBuilder"/></param>
-        /// <returns>A <typeparamref name="TBuilder"/> with OData authorization enabled</returns>
-        public static TBuilder RequireODataAuthorization<TBuilder>(this TBuilder builder)
-            where TBuilder : IEndpointConventionBuilder
-        {
-            builder.RequireAuthorization(Constants.DefaultPolicyName);
-
-            return builder;
-        }
-
-        /// <summary>
-        /// Require OData Authorization for all OData-enabled Endpoints. 
-        /// </summary>
-        /// <typeparam name="TBuilder">Type of the <see cref="IEndpointConventionBuilder"/></typeparam>
-        /// <param name="builder">The <see cref="IEndpointConventionBuilder"/></param>
         /// <param name="policyName">The Policy name</param>
         /// <returns>A <typeparamref name="TBuilder"/> with OData authorization enabled</returns>
-        public static TBuilder RequireODataAuthorization<TBuilder>(this TBuilder builder, string policyName)
+        public static TBuilder RequireODataAuthorization<TBuilder>(this TBuilder builder, string policyName = Constants.DefaultPolicyName)
             where TBuilder : IEndpointConventionBuilder
         {
             builder.RequireAuthorization(policyName);
