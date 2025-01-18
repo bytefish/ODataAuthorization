@@ -1,4 +1,4 @@
-# OData WebApi Authorization extensions
+# ODataAuthorization
 
 This library is a fork of the `Microsoft.AspNetCore.OData.Authorization` library, which is available at:
 
