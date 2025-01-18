@@ -8,8 +8,9 @@ It uses the permissions defined in the [capability annotations] of the OData mod
 service based on `Microsoft.AspNetCore.OData`. This is done by adding an OData Policy, when configuring a services 
 Authorization.
 
-The library has been renamed to `ODataAuthorization` to avoid being mistaken as an official Microsoft package. As of 
-version `2.0` the APIs differ greatly, so please read carefully when updating this dependency.
+The library has been renamed to `ODataAuthorization` to avoid being mistaken as an official Microsoft package. 
+
+Starting with version `2.0.0` the APIs between projects differ greatly, so please read carefully when updating this dependency.
 
 [capability annotations]: https://github.com/oasis-tcs/odata-vocabularies/blob/master/vocabularies/Org.OData.Capabilities.V1.md
 
