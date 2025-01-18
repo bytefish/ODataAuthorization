@@ -14,12 +14,28 @@ version `2.0` the APIs differ greatly, so please read carefully when updating th
 
 ## Usage
 
-In your `Program.cs` file:
+In your `Program.cs` file you'll need to add the Policy and Require it for your Endpoints:
 
-```c#
+```csharp
 using Microsoft.AspNetCore.OData.Authorization
 
+// ...
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddODataAuthorizationPolicy();
+});
+
+// ...
+
+var app = builder.Build();
+
+// ...
+
+
+app
+    .MapControllers()
+    .RequireODataAuthorization();
 ```
 
 ## Sample applications
@@ -30,10 +46,17 @@ using Microsoft.AspNetCore.OData.Authorization
 ### How to specify permission scopes?
 
 By default, the library will try extract permissions from the authenticated user's claims. Specifically, it will look for claims 
-with the key `Scope`. If your app is storing user scopes differently (e.g. using a different key), you can provide your own 
-function: 
+with the key `Scope`. If your app is storing user scopes differently (e.g. using a different key), you can pass your own 
+function to the policy: 
 
-
+```csharp
+builder.Services.AddAuthorization(options =>
+{
+    options.AddODataAuthorizationPolicy("MyPolicy", (user) => user
+                            .FindAll("PermissionScope")
+                            .Select(claim => claim.Value));
+});
+```
 
 For a complete working example, check [the sample application](samples/ODataAuthorizationSample).
 
