@@ -10,9 +10,9 @@ using Microsoft.OData.UriParser;
 
 namespace ODataAuthorization
 {
-    internal static class ODataModelPermissionsExtractor
+    public static class ODataModelPermissionsExtractor
     {
-        internal static IScopesEvaluator ExtractPermissionsForRequest(this IEdmModel model, string method, ODataPath odataPath, SelectExpandClause selectExpandClause)
+        public static IScopesEvaluator ExtractPermissionsForRequest(IEdmModel model, string method, ODataPath odataPath, SelectExpandClause selectExpandClause)
         {
             ODataPathSegment prevSegment = null;
 
@@ -26,10 +26,9 @@ namespace ODataAuthorization
 
             if (odataPath.ToString().EndsWith("$ref", StringComparison.OrdinalIgnoreCase))
             {
-                // for ref segments, we apply the permission of the entity that contains the navigation property
-                // e.g. for GET Customers(10)/Products/$ref, we apply the read key permissions of Customers
-                // for GET TopCustomer/Products/$ref, we apply the read permissions of TopCustomer
-                // for DELETE Customers(10)/Products(10)/$ref we apply the update permissions of Customers
+                // For ref segments, we apply the permission of the entity that contains the navigation propertye.g. for GET Customers(10)/Products/$ref,
+                // we apply the read key permissions of Customers. For GET TopCustomer/Products/$ref, we apply the read permissions of TopCustomer. For
+                // DELETE Customers(10)/Products(10)/$ref we apply the update permissions of Customers.
                 lastSegmentIndex = odataPath.Count - 2;
 
                 while (!(odataPath.ElementAt(lastSegmentIndex) is KeySegment || odataPath.ElementAt(lastSegmentIndex) is SingletonSegment || odataPath.ElementAt(lastSegmentIndex) is NavigationPropertySegment) && lastSegmentIndex > 0)
@@ -57,12 +56,8 @@ namespace ODataAuthorization
                     prevSegment = segment;
                     segments.Add(segment);
 
-                    // if nested segment, extract navigation restrictions of root
-
-                    // else extract entity/set  restrictions
                     if (segment is EntitySetSegment entitySetSegment)
                     {
-
                         // if Customers(key), then we'll handle it when we reach the key segment
                         // so that we can properly handle ReadByKeyRestrictions
                         if (IsNextSegmentKey(odataPath, i))

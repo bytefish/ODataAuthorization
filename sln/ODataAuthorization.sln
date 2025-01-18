@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CookieAuthenticationSample"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{E7296D55-356B-4E12-9ACC-30E0A983D427}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JwtAuthenticationSample", "..\samples\JwtAuthenticationExample\JwtAuthenticationSample\JwtAuthenticationSample.csproj", "{03A8A4B1-4CD9-40EA-9D8B-E656B26189F0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,10 +35,6 @@ Global
 		{1114A03D-29AA-4F92-8619-BAFF9A399A69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1114A03D-29AA-4F92-8619-BAFF9A399A69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1114A03D-29AA-4F92-8619-BAFF9A399A69}.Release|Any CPU.Build.0 = Release|Any CPU
-		{03A8A4B1-4CD9-40EA-9D8B-E656B26189F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{03A8A4B1-4CD9-40EA-9D8B-E656B26189F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{03A8A4B1-4CD9-40EA-9D8B-E656B26189F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{03A8A4B1-4CD9-40EA-9D8B-E656B26189F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,7 +42,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{9A41F458-49A0-4B6B-8916-92D7A57CB449} = {E7296D55-356B-4E12-9ACC-30E0A983D427}
 		{1114A03D-29AA-4F92-8619-BAFF9A399A69} = {E7296D55-356B-4E12-9ACC-30E0A983D427}
-		{03A8A4B1-4CD9-40EA-9D8B-E656B26189F0} = {E7296D55-356B-4E12-9ACC-30E0A983D427}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A0192535-BE21-4075-B04D-25DEF66502E8}

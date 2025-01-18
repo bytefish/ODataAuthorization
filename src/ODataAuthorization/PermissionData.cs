@@ -12,11 +12,13 @@ namespace ODataAuthorization
     internal class PermissionData: IScopesEvaluator
     {
         public string SchemeName { get; set; }
+
         public IList<PermissionScopeData> Scopes { get; set; }
 
         public bool AllowsScopes(IEnumerable<string> scopes)
         {
             var allowedScopes = Scopes.Select(s => s.Scope);
+
             return allowedScopes.Intersect(scopes).Any();
         }
     }

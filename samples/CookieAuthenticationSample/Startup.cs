@@ -1,6 +1,4 @@
-using System.Linq;
 using System.Threading.Tasks;
-using ODataAuthorization.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -63,25 +61,15 @@ namespace ODataAuthorizationDemo
                     };
                 });
 
+
+            services.AddAuthorization(options => options.AddODataAuthorizationPolicy());
+
             services
                 .AddControllers()
                 // Add OData Routes:
                 .AddOData((opt) => opt
                     .AddRouteComponents("odata", AppEdmModel.GetModel())
-                    .EnableQueryFeatures())
-                // Add OData Authorization:
-                .AddODataAuthorization((options) =>
-                {
-                    options.ScopesFinder = context =>
-                    {
-                        // Select all "Scope" Claims of the ClaimsPrincipal:
-                        var scopes = context.User
-                            .FindAll("Scope")
-                            .Select(claim => claim.Value);
-
-                        return Task.FromResult(scopes);
-                    };
-           });
+                    .EnableQueryFeatures());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -96,11 +84,13 @@ namespace ODataAuthorizationDemo
 
             app.UseRouting();
 
+            
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers().RequireAuthorization(ODataAuthorizationPolicies.Constants.DefaultPolicyName);
+
             });
         }
     }
