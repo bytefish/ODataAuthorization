@@ -39,7 +39,7 @@ app
     .RequireODataAuthorization();
 ```
 
-The Policy only applied to OData-enabled endpoints. Non-OData endpoints are ignored.
+The Policy only applies to OData-enabled endpoints. Non-OData endpoints are ignored.
 
 ## Sample applications
 
