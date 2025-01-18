@@ -29,6 +29,12 @@ namespace ODataAuthorization
             public const string DefaultScopeClaimType = "Scope";
         }
 
+        /// <summary>
+        /// Require OData Authorization for all OData-enabled Endpoints. 
+        /// </summary>
+        /// <typeparam name="TBuilder">Type of the <see cref="IEndpointConventionBuilder"/></typeparam>
+        /// <param name="builder">The <see cref="IEndpointConventionBuilder"/></param>
+        /// <returns>A <typeparamref name="TBuilder"/> with OData authorization enabled</returns>
         public static TBuilder RequireODataAuthorization<TBuilder>(this TBuilder builder)
             where TBuilder : IEndpointConventionBuilder
         {
@@ -37,6 +43,13 @@ namespace ODataAuthorization
             return builder;
         }
 
+        /// <summary>
+        /// Require OData Authorization for all OData-enabled Endpoints. 
+        /// </summary>
+        /// <typeparam name="TBuilder">Type of the <see cref="IEndpointConventionBuilder"/></typeparam>
+        /// <param name="builder">The <see cref="IEndpointConventionBuilder"/></param>
+        /// <param name="policyName">The Policy name</param>
+        /// <returns>A <typeparamref name="TBuilder"/> with OData authorization enabled</returns>
         public static TBuilder RequireODataAuthorization<TBuilder>(this TBuilder builder, string policyName)
             where TBuilder : IEndpointConventionBuilder
         {
@@ -49,33 +62,18 @@ namespace ODataAuthorization
         /// Adds the OData Authorization Policy applied to all OData-enabled Endpoints.
         /// </summary>
         /// <param name="options"><see cref="AuthorizationOptions"> to be configured</param>
-        public static void AddODataAuthorizationPolicy(this AuthorizationOptions options)
+        /// <param name="policyName">The Policy Name, which defaults to <see cref="Constants.DefaultPolicyName"/></param>
+        /// <param name="getUserScopes">Resolver for the User Scopes, uses <see cref="Constants.DefaultScopeClaimType"/>, if <see cref="null"/> is passed</param>
+        public static void AddODataAuthorizationPolicy(this AuthorizationOptions options, string policyName = Constants.DefaultPolicyName, Func<ClaimsPrincipal, IEnumerable<string>>? getUserScopes = null)
         {
-            options.AddODataAuthorizationPolicy(Constants.DefaultPolicyName);
-        }
+            // Set the Resolver for Permissions, if none was given
+            if (getUserScopes == null)
+            {
+                getUserScopes = (user) => user
+                    .FindAll(Constants.DefaultScopeClaimType)
+                    .Select(claim => claim.Value);
+            }
 
-        /// <summary>
-        /// Adds the OData Authorization Policy applied to all OData-enabled Endpoints.
-        /// </summary>
-        /// <param name="options"><see cref="AuthorizationOptions"> to be configured</param>
-        /// <param name="policyName">The Policy Name</param>
-        public static void AddODataAuthorizationPolicy(this AuthorizationOptions options, string policyName)
-        {
-            Func<ClaimsPrincipal, IEnumerable<string>> getUserScopes = (user) => user
-                            .FindAll(Constants.DefaultScopeClaimType)
-                            .Select(claim => claim.Value);
-
-            options.AddODataAuthorizationPolicy(policyName, getUserScopes);
-        }
-
-        /// <summary>
-        /// Adds the OData Authorization Policy applied to all OData-enabled Endpoints.
-        /// </summary>
-        /// <param name="options"><see cref="AuthorizationOptions"> to be configured</param>
-        /// <param name="policyName">The Policy Name</param>
-        /// <param name="getUserScopes">Resolver for the User Scopes</param>
-        public static void AddODataAuthorizationPolicy(this AuthorizationOptions options, string policyName, Func<ClaimsPrincipal, IEnumerable<string>> getUserScopes)
-        {
             options.AddPolicy(policyName, policyBuilder =>
             {
                 policyBuilder.RequireAssertion((ctx) =>
