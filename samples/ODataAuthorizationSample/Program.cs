@@ -1,26 +1,57 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using AspNetCore3ODataPermissionsSample;
+using AspNetCore3ODataPermissionsSample.Models;
+using Microsoft.AspNetCore.OData;
+using Microsoft.EntityFrameworkCore;
+using ODataAuthorization;
+using ODataAuthorizationSample.Auth;
 
-namespace AspNetCore3ODataPermissionsSample
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("ODataAuthDemo"));
+
+builder.Services.AddCors(options =>
 {
-    public class Program
-    {
-        public static void Main(string[] args)
+    options.AddPolicy("AllowAll",
+        builder =>
         {
-            CreateHostBuilder(args).Build().Run();
-        }
+            builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+});
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
-}
+
+// OData authorization depends on the AspNetCore authentication and authorization services
+// we need to specify at least one authentication scheme and handler. Here we opt for a simple custom handler defined
+// later in this file, for demonstration purposes. Could also use cookie-based or JWT authentication
+builder.Services.AddAuthentication("AuthScheme")
+    .AddScheme<CustomAuthenticationOptions, CustomAuthenticationHandler>("AuthScheme", options => { });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddODataAuthorizationPolicy();
+});
+
+builder.Services
+    .AddControllers()
+    // Add OData Routes:
+    .AddOData((opt) => opt
+        .AddRouteComponents("odata", AppModel.GetEdmModel())
+        .EnableQueryFeatures());
+
+var app = builder.Build();
+
+app.UseCors("AllowAll");
+
+app.UseRouting();
+
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app
+    .MapControllers()
+    .RequireODataAuthorization();
+
+app.Run();

@@ -4,56 +4,36 @@ This library is a fork of the `Microsoft.AspNetCore.OData.Authorization` library
 
 * [https://github.com/OData/WebApiAuthorization](https://github.com/OData/WebApiAuthorization)
 
-It uses the permissions defined in the [capability annotations] of 
-the OData model to apply authorization policies to an OData service based on `Microsoft.AspNetCore.OData`.
+It uses the permissions defined in the [capability annotations] of the OData model to apply authorization policies to an OData 
+service based on `Microsoft.AspNetCore.OData`. This is done by adding an OData Policy.
 
-It has been renamed to `ODataAuthorization` to avoid being mistaken as an official Microsoft package.
+The library has been renamed to `ODataAuthorization` to avoid being mistaken as an official Microsoft package. As of 
+version `2.0` the APIs differ greatly, so please read carefully when updating this dependency.
 
 [capability annotations]: https://github.com/oasis-tcs/odata-vocabularies/blob/master/vocabularies/Org.OData.Capabilities.V1.md
 
 ## Usage
 
-In your `Startup.cs` file:
+In your `Program.cs` file:
 
 ```c#
 using Microsoft.AspNetCore.OData.Authorization
 
-public void ConfigureServices(IServiceCollection services)
-{
-    // odata authorization services
-    services.AddOData()
-        .AddODataAuthorization(options => {
-            // you need to register an authentication scheme/handler
-            // This works similar to services.AddAuthentication
-            options.ConfigureAuthentication("DefaultAuthScheme").AddScheme(/* ... */)
-        });
 
-    service.AddRouting();
-}
 ```
 
 ## Sample applications
 
 - [ODataAuthorizationSample](./samples/ODataAuthorizationSample): Simple API with permission restrictions and OData authorization middleware set up with a custom authentication handler
 - [CookieAuthenticationSample](./samples/CookieAuthenticationSample): Basic API with permissions restrictions and a cookie-based authentication handler
-- [JwtAuthenticationSample](./samples/JwtAuthenticationSample): Basic API with permissions restrictions and a Jwt-based authentication handler
 
 ### How to specify permission scopes?
 
-By default, the library will try extract permissions from the
-authenticated user's claims. Specifically, it will look for
-claims with the key `Scope`. If your app is storing user scopes differently (e.g. using a different key), you can provider a scope finder delegate that returns a list of scopes from the current user:
+By default, the library will try extract permissions from the authenticated user's claims. Specifically, it will look for claims 
+with the key `Scope`. If your app is storing user scopes differently (e.g. using a different key), you can provide your own 
+function: 
 
-```c#
-services.AddODataAuthorization(options => {
-    options.ScopeFinder = (context) => {
-        var scopesClaim = context.User?.FindFirst("Permissions");
-        return Task.FromResult(scopes.Value.Split(" ").AsEnumerable());
-    };
 
-    options.ConfigureAuthentication().AddJWTAuthenticationScheme();
-})
-```
 
 For a complete working example, check [the sample application](samples/ODataAuthorizationSample).
 
