@@ -32,16 +32,5 @@ namespace ODataAuthorization.Tests.Extensions
 
             return json;
         }
-
-        /// <summary>
-        /// A custom extension for AspNetCore to deserialize JSON content as an object.
-        /// AspNet provides this in  System.Net.Http.Formatting.
-        /// </summary>
-        /// <returns>The content value.</returns>
-        public static async Task<T> ReadAsObject<T>(this HttpContent content)
-        {
-            string json = await content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<T>(json);
-        }
     }
 }

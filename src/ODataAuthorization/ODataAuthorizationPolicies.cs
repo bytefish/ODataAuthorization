@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.OData.Abstracts;
 using Microsoft.AspNetCore.OData.Extensions;
@@ -28,23 +29,54 @@ namespace ODataAuthorization
             public const string DefaultScopeClaimType = "Scope";
         }
 
+        public static TBuilder RequireODataAuthorization<TBuilder>(this TBuilder builder)
+            where TBuilder : IEndpointConventionBuilder
+        {
+            builder.RequireAuthorization(Constants.DefaultPolicyName);
+
+            return builder;
+        }
+
+        public static TBuilder RequireODataAuthorization<TBuilder>(this TBuilder builder, string policyName)
+            where TBuilder : IEndpointConventionBuilder
+        {
+            builder.RequireAuthorization(policyName);
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Adds the OData Authorization Policy applied to all OData-enabled Endpoints.
+        /// </summary>
+        /// <param name="options"><see cref="AuthorizationOptions"> to be configured</param>
         public static void AddODataAuthorizationPolicy(this AuthorizationOptions options)
         {
             options.AddODataAuthorizationPolicy(Constants.DefaultPolicyName);
         }
 
-        public static void AddODataAuthorizationPolicy(this AuthorizationOptions options, string name)
+        /// <summary>
+        /// Adds the OData Authorization Policy applied to all OData-enabled Endpoints.
+        /// </summary>
+        /// <param name="options"><see cref="AuthorizationOptions"> to be configured</param>
+        /// <param name="policyName">The Policy Name</param>
+        public static void AddODataAuthorizationPolicy(this AuthorizationOptions options, string policyName)
         {
             Func<ClaimsPrincipal, IEnumerable<string>> getUserScopes = (user) => user
                             .FindAll(Constants.DefaultScopeClaimType)
                             .Select(claim => claim.Value);
 
-            options.AddODataAuthorizationPolicy(name, getUserScopes);
+            options.AddODataAuthorizationPolicy(policyName, getUserScopes);
         }
 
-        public static void AddODataAuthorizationPolicy(this AuthorizationOptions options, string name, Func<ClaimsPrincipal, IEnumerable<string>> getUserScopes)
+        /// <summary>
+        /// Adds the OData Authorization Policy applied to all OData-enabled Endpoints.
+        /// </summary>
+        /// <param name="options"><see cref="AuthorizationOptions"> to be configured</param>
+        /// <param name="policyName">The Policy Name</param>
+        /// <param name="getUserScopes">Resolver for the User Scopes</param>
+        public static void AddODataAuthorizationPolicy(this AuthorizationOptions options, string policyName, Func<ClaimsPrincipal, IEnumerable<string>> getUserScopes)
         {
-            options.AddPolicy(name, policyBuilder =>
+            options.AddPolicy(policyName, policyBuilder =>
             {
                 policyBuilder.RequireAssertion((ctx) =>
                 {
@@ -77,9 +109,10 @@ namespace ODataAuthorization
             // Get the OData Feature to access the parsed OData components
             var odataFeature = httpContext.ODataFeature();
 
+            // We should ignore Non-OData Routes
             if (odataFeature == null || odataFeature.Path == null)
             {
-                return false;
+                return true;
             }
 
             // Get the EDM Model associated with the Request
@@ -91,13 +124,13 @@ namespace ODataAuthorization
             }
 
             // At this point in the Middleware the SelectExpandClause hasn't been evaluated yet (https://github.com/OData/WebApiAuthorization/issues/4),
-            // but it's needed to provide securing the $expand-statements, so that you can't request expanded data without the required permissions.
+            // but it's needed to provide securing the $expand-statements, so that you can't request expanded data without the required Scope Permissions.
             ParseSelectExpandClause(httpContext, model, odataFeature);
 
-            // Extract the Required Permissions for the Request using the 
+            // Extract the Required Permissions for the Request using the ODataModelPermissionsExtractor
             var permissions = ODataModelPermissionsExtractor.ExtractPermissionsForRequest(model, httpContext.Request.Method, odataFeature.Path, odataFeature.SelectExpandClause);
 
-            // Evaluate the Scopes
+            // Finally evaluate the Scopes
             bool allowsScope = permissions.AllowsScopes(scopes);
 
             return allowsScope;
@@ -133,6 +166,5 @@ namespace ODataAuthorization
                     .LogInformation(e, "Failed to parse SelectExpandClause");
             }
         }
-
     }
 }

@@ -80,7 +80,7 @@ namespace ODataAuthorization.Tests
 
             var scopesList = userScopes.Split(',');
 
-            var permissionHandler = _model.ExtractPermissionsForRequest(method, path, null);
+            var permissionHandler = ODataModelPermissionsExtractor.ExtractPermissionsForRequest(_model, method, path, null);
 
             Assert.True(permissionHandler.AllowsScopes(scopesList));
         }
@@ -96,7 +96,7 @@ namespace ODataAuthorization.Tests
 
             var scopesList = userScopes.Split(',');
             
-            var permissionHandler = _model.ExtractPermissionsForRequest(method, path, null);
+            var permissionHandler = ODataModelPermissionsExtractor.ExtractPermissionsForRequest(_model, method, path, null);
 
             Assert.False(permissionHandler.AllowsScopes(scopesList));
         }

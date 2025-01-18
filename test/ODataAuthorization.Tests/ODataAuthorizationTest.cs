@@ -23,6 +23,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Xunit;
 using Microsoft.AspNetCore.OData;
+using Microsoft.AspNetCore.Authorization;
+using System.Text.Encodings.Web;
 
 namespace ODataAuthorization.Tests
 {
@@ -134,6 +136,10 @@ namespace ODataAuthorization.Tests
                             });
                     });
 
+                    // Adds the Policy
+                    services.AddAuthentication(a => a.AddScheme<CustomAuthHandler>("Test", "Test Auth"));
+                    services.AddAuthorization(options => options.AddODataAuthorizationPolicy());
+
                     services
                         .AddControllers()
                         .AddOData((opt) =>
@@ -147,30 +153,19 @@ namespace ODataAuthorization.Tests
                         });
 
                     services.ConfigureControllers(controllers);
-
-                    services.AddODataAuthorization((options) =>
-                    {
-                        options.ScopesFinder = (context) =>
-                        {
-                            var permissions = context.User?.FindAll("Permission").Select(p => p.Value);
-
-                            return Task.FromResult(permissions ?? Enumerable.Empty<string>());
-                        };
-
-                        options
-                            .ConfigureAuthentication("AuthScheme")
-                            .AddScheme<CustomAuthOptions, CustomAuthHandler>("AuthScheme", options => { });
-                    });
                 })
                 .Configure(app =>
                 {
                     app.UseCors("AllowAll");
                     app.UseRouting();
+                    
                     app.UseAuthentication();
+                    app.UseAuthorization();
 
                     app.UseEndpoints(endpoints =>
                     {
-                        endpoints.MapControllers();
+                        endpoints.MapControllers()
+                            .RequireAuthorization(ODataAuthorizationPolicies.Constants.DefaultPolicyName);
                     });
                 });
 
@@ -331,7 +326,7 @@ namespace ODataAuthorization.Tests
 
 
             var message = new HttpRequestMessage(new HttpMethod("GET"), uri);
-            message.Headers.Add("Scope", "Perm.Read");
+            message.Headers.Add("Scopes", "Perm.Read");
 
             response = await _client.SendAsync(message);
 
@@ -353,7 +348,8 @@ namespace ODataAuthorization.Tests
             if (scopeValues.Count != 0)
             {
                 var scopes = scopeValues.ToArray()[0].Split(',');
-                identity.AddClaims(scopes.Select(scope => new Claim("Permission", scope)));
+
+                identity.AddClaims(scopes.Select(scope => new Claim(ODataAuthorizationPolicies.Constants.DefaultScopeClaimType, scope)));
             }
 
             var principal = new System.Security.Principal.GenericPrincipal(identity, Array.Empty<string>());
