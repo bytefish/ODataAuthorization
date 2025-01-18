@@ -11,9 +11,9 @@ namespace ODataAuthorization
     /// </summary>
     internal class PermissionData: IScopesEvaluator
     {
-        public string SchemeName { get; set; }
+        public required string SchemeName { get; set; }
 
-        public IList<PermissionScopeData> Scopes { get; set; }
+        public IList<PermissionScopeData> Scopes { get; set; } = [];
 
         public bool AllowsScopes(IEnumerable<string> scopes)
         {
@@ -25,7 +25,8 @@ namespace ODataAuthorization
 
     internal class PermissionScopeData
     {
-        public string Scope { get; set; }
-        public string RestrictedProperties { get; set; }
+        public required string Scope { get; set; }
+
+        public required string? RestrictedProperties { get; set; }
     }
 }
