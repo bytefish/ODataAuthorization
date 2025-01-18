@@ -39,6 +39,8 @@ app
     .RequireODataAuthorization();
 ```
 
+The Policy only applied to OData-enabled endpoints. Non-OData endpoints are ignored.
+
 ## Sample applications
 
 - [ODataAuthorizationSample](./samples/ODataAuthorizationSample): Simple API with permission restrictions and OData authorization middleware set up with a custom authentication handler
