@@ -61,8 +61,10 @@ namespace ODataAuthorizationDemo
                     };
                 });
 
-
-            services.AddAuthorization(options => options.AddODataAuthorizationPolicy());
+            services.AddAuthorization(options =>
+            {
+                options.AddODataAuthorizationPolicy();
+            });
 
             services
                 .AddControllers()
@@ -84,12 +86,13 @@ namespace ODataAuthorizationDemo
 
             app.UseRouting();
 
-            
+
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers().RequireAuthorization(ODataAuthorizationPolicies.Constants.DefaultPolicyName);
+                endpoints.MapControllers()
+                    .RequireODataAuthorization();
 
             });
         }

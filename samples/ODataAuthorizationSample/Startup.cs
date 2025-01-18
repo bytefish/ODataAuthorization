@@ -8,15 +8,14 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.OData;
-using ODataAuthorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using ODataAuthorization;
 using ODataAuthorizationSample.Data;
-using ODataAuthorization.Extensions;
 
 namespace AspNetCore3ODataPermissionsSample
 {
@@ -49,6 +48,15 @@ namespace AspNetCore3ODataPermissionsSample
                     });
             });
 
+            // OData authorization depends on the AspNetCore authentication and authorization services
+            // we need to specify at least one authentication scheme and handler. Here we opt for a simple custom handler defined
+            // later in this file, for demonstration purposes. Could also use cookie-based or JWT authentication
+            services.AddAuthentication("AuthScheme")
+                .AddScheme<CustomAuthenticationOptions, CustomAuthenticationHandler>("AuthScheme", options => { });
+
+            services.AddAuthorization(o => o
+                .AddODataAuthorizationPolicy());
+
             services
                 .AddControllers()
                 // Enable OData Functionality
@@ -57,33 +65,11 @@ namespace AspNetCore3ODataPermissionsSample
                     opt
                         .AddRouteComponents("odata", AppModel.GetEdmModel())
                         .EnableQueryFeatures().Select().Expand().OrderBy().Filter().Count();
-                })
-                // Enable Authorization on OData Endpoints
-                .AddODataAuthorization((options) =>
-                {
-                    // we setup a custom scope finder that will extract the user's scopes from the Permission claims
-                    options.ScopesFinder = (context) =>
-                    {
-                        var permissions = context.User?.FindAll("Permission");
-                        if (permissions == null)
-                        {
-                            return Task.FromResult(Enumerable.Empty<string>());
-                        }
-    
-                        return Task.FromResult(permissions.Select(p => p.Value));
-                    };
-
-                options.ConfigureAuthentication("AuthScheme")
-                    .AddScheme<CustomAuthenticationOptions, CustomAuthenticationHandler>("AuthScheme", options => { });
                 });
 
-            // OData authorization depends on the AspNetCore authentication and authorization services
-            // we need to specify at least one authentication scheme and handler. Here we opt for a simple custom handler defined
-            // later in this file, for demonstration purposes. Could also use cookie-based or JWT authentication
-            //services.AddAuthentication("AuthScheme")
-            //    .AddScheme<CustomAuthentationOptions, CustomAuthenticationHandler>("AuthScheme", options => { });
+
             //services.AddAuthorization();
-            
+
             services.AddRouting();
         }
 
@@ -100,10 +86,12 @@ namespace AspNetCore3ODataPermissionsSample
             app.UseRouting();
 
             app.UseAuthentication();
+            app.UseAuthorization();
             
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers()
+                    .RequireODataAuthorization();
             });
 
             DatabaseUtils.CreateDatabaseAndSampleData(app.ApplicationServices);
@@ -126,7 +114,7 @@ namespace AspNetCore3ODataPermissionsSample
             if (scopeValues.Count != 0)
             {
                 var scopes = scopeValues.ToArray()[0].Split(",").Select(s => s.Trim());
-                var claims = scopes.Select(scope => new Claim("Permission", scope));
+                var claims = scopes.Select(scope => new Claim("Scope", scope));
                 identity.AddClaims(claims);
             }
 
