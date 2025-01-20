@@ -14,7 +14,7 @@ The library has been renamed to `ODataAuthorization` to avoid being mistaken as 
 
 ## Usage
 
-In your `Program.cs` file you'll need to add the Policy and Require it for your Endpoints:
+In your `Program.cs` file you'll need to add a policy and require it for your endpoints:
 
 ```csharp
 using ODataAuthorization;
@@ -37,7 +37,7 @@ app
     .RequireODataAuthorization();
 ```
 
-The Policy only applies to OData-enabled endpoints. Non-OData endpoints are ignored.
+The policy only applies to OData-enabled endpoints. Non-OData endpoints are ignored.
 
 ## Sample applications
 
