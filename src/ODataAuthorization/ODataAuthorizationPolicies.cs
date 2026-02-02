@@ -146,7 +146,8 @@ namespace ODataAuthorization
             catch (Exception e)
             {
                 httpContext.RequestServices
-                    .GetRequiredService<ILogger>()
+                    .GetRequiredService<ILoggerFactory>()
+                    .CreateLogger("ODataAuthorizationPolicies")
                     .LogInformation(e, "Failed to parse SelectExpandClause");
             }
         }
